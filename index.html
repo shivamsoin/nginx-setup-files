@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>NGINX Fundamentals</title>
+    <link rel="stylesheet" href="style.css" type="text/css">
+</head>
+
+<body>
+
+    <header>
+        <div class="inner">
+            <img class="thumb" src="thumb.png" alt="NGINX Logo">
+            <div class="heading">
+                <h1>NGINX Fundamentals</h1>
+                <br>
+                <p>Learn how to install & configure an Nginx web server from scratch.</p>
+                <hr>
+                <ul>
+                    <li>Learn to create custom Nginx web servers</li>
+                    <li>Customise your Nginx install</li>
+                    <li>Secure & optimise your server</li>
+                    
+                    
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <main>
+      <h1>What is NGNIX?</h1>
+        <p>NGINX is open source software for web serving, reverse proxying, caching, load balancing, media streaming, and more. It started out as a web server designed for <br >maximum performance and stability. In addition to its HTTP server capabilities, NGINX can also function as a proxy server for email (IMAP, POP3, and SMTP) and a reverse proxy and load balancer for HTTP, TCP, and UDP servers.</p>
+<h1>How to install NGNIX?</h1>
+<h3>Step 1: Install Nginx Web Server in Ubuntu Linux</h3>
+        <p>Installing the Nginx web server is a straightforward process in Ubuntu. You need to update your software repository. Then install the Nginx web server by running the apt command given below.<br> First, open your terminal shell copy and paste the following shell commands in your Ubuntu terminal</p>
+<div class="command">
+  <pre>sudo apt update
+sudo apt install nginx </pre>
+
+</div>
+<p>
+After installing the Nginx web server, you have to start the web server on your Ubuntu machine. To start the Nginx web server, you can use the systemctl command to start and check the server status.
+</p>
+<div class="command">
+  <pre>
+sudo systemctl start nginx
+sudo systemctl status nginx</pre>
+</div>
+<p>
+  Now, you can check the version of your Nginx web server on your Ubuntu machine.
+version
+</p>
+<div class="command">
+<pre>sudo dpkg -l nginx</pre>
+
+</div>
+<h3>Step 2: Configure Firewall Settings for the Nginx Server</h3>
+        <p>Ubuntu uses the Uncomplicated Firewall (UFW) firewall protection to make your system secure. In this step, we have to configure the Nginx web server to the UFW firewall. We have to add a rule to allow the Nginx web server in the accepting firewall list.
+        First, you have to enable the UFW firewall features in your Ubuntu machine. Then you have to allow the Nginx webserver to the UFW settings. Then you can reload the check the status of your UFW firewall configuration. If you have done everything correctly, you will see that a new rule is added to the firewall configuration.
+    </p>
+<div class="command">
+<pre>
+sudo ufw enable
+sudo ufw allow 'Nginx HTTP'
+sudo ufw reload
+sudo ufw status</pre>
+</div>
+<h3>Step 3: Power the Nginx Web Server</h3>
+        <p>If you are completely new to Nginx or have been using the Apache web server, I believe this step will help you get fundamental commands of the Nginx web server. After installing the Nginx web server, you can now use the following terminal command-lines to start, stop, enable, reload, and restart the Nginx web server on your Ubuntu machine.</p>
+<div class="command">
+  <pre>
+sudo systemctl stop nginx
+sudo systemctl start nginx
+sudo systemctl enable nginx
+sudo systemctl restart nginx
+sudo systemctl reload nginx
+  </pre>
+</div>
+<p>
+  A few basic commands of the Nginx server are given below that might be helpful to maintain the Nginx web server on Ubuntu.<br><br>
+
+Check the Nginx server Status
+</p>
+<div class="command">
+  <pre>
+  nginx -t
+  </pre>
+</div>
+<p>
+  More Detailed Information About Nginx Server
+</p><br>
+<div class="command">
+  <pre>
+  nginx -V
+  </pre>
+</div>
+<p>
+  Dump Full Nginx Server Configuration
+</p>
+<div class="command">
+  <pre>
+  nginx -T
+  </pre>
+</div>
+<h3>Step 4: Load the Nginx Web Server on Ubuntu Linux</h3>
+<p>
+  Now in this step, we will find the web address that we can use to load the Nginx web server through a web browser. We can load the Nginx server on the localhost address, and the default Nginx port is 80. However, we can check and verify the web address by using the Net-tool commands. If you don’t have the net tool installed inside your Ubuntu machine, install it first.
+</p>
+<div class="command">
+<pre>
+sudo apt install net-tools
+ifconfig
+</pre>
+</div>
+<p>
+  As we can see that the localhost web address is shown in the shell, we can type the address and hit the Enter button to load the Nginx web server’s welcome page on our Ubuntu machine
+</p>
+<div class="command">
+  <pre>
+  http://127.0.0.1/
+  </pre>
+</div>
+<h3>Step 5: Enable HTTPS on the Web Server</h3>
+<p>
+  The default web address of any web server is always an HTTP address. If you want to make your web server more secure, you can generate a self-signed CSR key for your web server. You can go through this post to know more about generating a CSR (Certificate Signing Request) in Linux. However, you can locate the CSR file inside the /etc/ssl directory of your Linux filesystem. First, make a directory to store your private CSR key then access root permission to the path.
+</p>
+<div class="command">
+  <pre>
+sudo mkdir /etc/ssl/private
+sudo chmod 700 /etc/ssl/private
+  </pre>
+</div>
+<p>
+  Now, make a CSR request for your Nginx web server form your Ubuntu machine. Use the following command line to generate a CSR. Fill all the required information to complete the certificate signing request
+</p>
+<div class="command">
+  <pre>
+  sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/nginx-selfsigned.key -out /etc/ssl/certs/nginx-selfsigned.crt
+  </pre>
+</div>
+<p>
+  Then you have to configure your Nginx web server for SSL certification. You can do this by editing the SSL configuration script. To make that change open the SSL configuration script by using your favorite script editor.
+</p>
+<div class="comamnd">
+<pre>
+sudo gedit /etc/nginx/conf.d/ssl.conf</pre></div>
+<p>
+  Now copy and paste the following script inside the SSL configuration script. Then save and exit the file.
+</p>
+<div class="command">
+  <pre>
+server {
+listen 443 http2 ssl;
+listen [::]:443 http2 ssl;
+
+UbuntuPIT http://127.0.0.1/;
+
+ssl_certificate /etc/ssl/certs/nginx-selfsigned.crt;
+ssl_certificate_key /etc/ssl/private/nginx-selfsigned.key;
+ssl_dhparam /etc/ssl/certs/dhparam.pem;
+}
+
+root /usr/share/nginx/html;
+
+location / {
+}
+
+error_page 404 /404.html;
+location = /404.html {
+}
+
+error_page 500 502 503 504 /50x.html;
+location = /50x.html {
+}
+}</pre>
+</div>
+<p>
+  Finally, make a little effort to redirect your Nginx webserver to HTTP to HTTPS. Open the SSL redirection configuration script add the following script into the file.
+</p>
+<div class="command">
+<pre>
+sudo vi /etc/nginx/default.d/ssl-redirect.conf</pre>
+</div>
+<p>
+  You can copy and paste the following line into your SSL redirect script
+</p>
+<div class="command">
+  <pre>
+  return 301 https://$host$request_uri/;
+  </pre>
+</div>
+<p>
+  Now to see the impact, restart your Nginx web server on Ubuntu.
+</p>
+<div class="command">
+  <pre>
+  sudo systemctl restart nginx
+  </pre>
+</div>
+<p>
+  Now visit the HTTPS web address of your Nginx web server.
+</p>
+<div class="command">
+  <pre>
+  https://127.0.0.1
+  </pre>
+</div>
+<h3>Step 6: Customize the Nginx Web Server on Ubuntu</h3>
+<p>Till now, we have seen how to install, configure, and load the Nginx web server; now, we will see how to customize the Nginx web server. We can assign a new web address and port to the Nginx configuration script.</p>
+First, we need to locate the Nginx installation path, which is <div class="command"><pre>/var/www/html</pre></div>. Don’t forget to run all the commands as a root user. Let assume our new web address will be www.mysamplesite101.com. Here, we will be configuring the Nginx settings to add the new URL to the Nginx web server.
+
+Now, we have to make a directory to host and add a new URL address. Then grant the access permission to the directory
+
+<div class="command">
+  <pre>
+sudo mkdir -p /var/www/mysamplesite101.com/html
+sudo chown -R $USER:$USER /var/www/mysamplesite101.com/html
+sudo chmod -R 755 /var/www/mysamplesite101.co
+  </pre>
+</div>
+<p>
+  Then open the index.html file of your new address to add some basic HTML lines for the webpage. You can use any script editor to edit the index.html script. The HTML code is given below; feel free to copy, paste, and replace the web address.
+</p>
+<div class="command">
+  <pre>
+  sudo gedit /var/www/mysamplesite101.com/html/index.html
+  </pre>
+</div>
+<p>
+  You must know that the Nginx web server has a configuration script where all the allowed web address names and links are stored. You have to enlist your URL address and grand permission to the address to let the Nginx web server load your URL.
+</p>
+<div class="command">
+  <pre>
+sudo gedit /etc/nginx/sites-available/mysamplesite101.com
+sudo ln -s /etc/nginx/sites-available/mysamplesite101.com /etc/nginx/sites-enabled/
+sudo ln -s /etc/nginx/sites-available/mysamplesite101.com /etc/nginx/sites-enabled/
+  </pre>
+</div>
+<p>
+  First, open the index script to see the available site list of Nginx on your Ubuntu machine. Then add your site name and domain to the script. You can use the following command lines to do the job.
+</p>
+<div class="command">
+  <pre>
+server {
+listen 80;
+listen [::]:80;
+
+mysamplesite101.com mysamplesite101.com;
+
+root /var/www/mysamplesite101.com;
+index index.html;
+
+location / {
+try_files $uri $uri/ =404;
+}
+}</pre>
+</div>
+<p>
+  Now restart the Nginx web server on your Ubuntu machine.
+</p>
+<div class="command">
+<pre>
+sudo systemctl restart nginx
+nginx -t</pre>
+</div>
+<p>
+  Here is some crucial directory address of the Nginx web server that might help you locate and edit the configuration script, available site list, error log, and access long on Ubuntu.
+
+Now type your customized URL in the address bar of your web browser. If you can load the following page, your configuration is functioning perfectly.
+</p>
+<div class="command">
+  <pre>
+/etc/nginx/nginx.conf
+/etc/nginx/sites-available
+/etc/nginx/sites-enabled
+/var/log/nginx/access.log
+/var/log/nginx/error.log</pre>
+</div>
+</main>
+    <div class="end">
+        <small><strong>Shivam Soin </strong> &nbsp; &bull; &nbsp; <i>proton.wtf</i></small>
+        <p>
+          <small><strong>Freshman at Chitkara University</strong></small>
+        </p>
+    </div>
+
+
+
+</body>
+
+</html>
